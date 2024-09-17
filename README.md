@@ -3,8 +3,8 @@ This project is a FastAPI-based application designed to process audio transcript
 
 ## Step 1: Clone this repo to your local machine.
 To clone the repo , navigate to your desired project directory in your terminal or command prompt and run the following command:
-    ```bash
-        git clone <repo>
+    ```bashCode
+    git clone <repo>
     ```
 
 ##  Step 2: Install virtual environment.
