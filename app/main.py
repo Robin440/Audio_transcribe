@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from app.routers import generate_transcribe
 from app.routers import health_check
 from prometheus_client import Counter,generate_latest
+from pathlib import Path
 
+# Load environment variables from .env file
 
 
 app = FastAPI()

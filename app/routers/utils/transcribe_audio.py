@@ -14,6 +14,7 @@ openai.api_key = OPENAI_KEY
 
 # Function to transcribe audio using Whisper
 def transcribe_audio(file_path):
+    print("//////////////////////////////////////")
     try:
         with open(file_path, "rb") as audio_file:
             response = openai.audio.transcriptions.create(
@@ -156,6 +157,7 @@ def transcribe_audio_with_openai(file_path):
     Returns:
         _type_: _description_
     """
+    print(f"open ai key ======== {openai.api_key}")
     audio_file_path = file_path
 
     # Split the audio if needed
@@ -193,8 +195,8 @@ def transcribe_audio_with_openai(file_path):
                 "chat": formatted_conversation,
                 "delete_status":delete_status
             }
-            # return data
-            print(f"data ============ {data}")
+            print(f"open ai data ========= {data}")
+            return data
         else:
             delete_status = delete_file(audio_file_path)
             return HTTP_400(

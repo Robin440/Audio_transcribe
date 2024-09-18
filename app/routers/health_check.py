@@ -2,13 +2,14 @@ from fastapi import APIRouter, HTTPException
 import redis
 import requests
 from celery import Celery
-
+from app.config import CELERY_BROKER_URL
 
 router = APIRouter()
+# redis://redis:6379/0
 
 # Initialize Celery and Redis
-celery_app = Celery('tasks', broker='redis://localhost:6379/0')
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+celery_app = Celery('tasks', broker='redis://redis:6379/0')
+redis_client = redis.Redis(host='redis', port=6379, db=0)
 
 @router.get("/health")
 def health_check():
@@ -32,6 +33,8 @@ def health_check():
     # Check Celery
     try:
         celery_status = celery_app.control.ping(timeout=1)
+        status["details"]["celery"] = "Celery workers are available"
+        status["status"] = "healthy"
         if not celery_status:
             status["details"]["celery"] = "Celery workers are not responding"
             status["status"] = "unhealthy"
@@ -42,6 +45,8 @@ def health_check():
     # Check Redis
     try:
         redis_client.ping()
+        status["details"]["redis"] = "Redis is available"
+        status["status"] = "healthy"
     except redis.ConnectionError:
         status["details"]["redis"] = "Redis is not available"
         status["status"] = "unhealthy"

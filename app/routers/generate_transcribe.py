@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path,Body
 from fastapi.responses import StreamingResponse
 import boto3
 import os
@@ -17,13 +17,14 @@ router = APIRouter()
 
 
 @router.post("/generate_transcribe/{file_key}/{identifier}/")
-def download_file(
+def generate_transcribe_with_AI_service(
     file_key: str = Path(
         ..., description="The key of the file to be downloaded from S3"
     ),
     identifier: str = Path(
         ..., description="The identifier for the file, e.g., aws/openai"
     ),
+   callback_url: str = Body(..., description="The URL where the result should be sent")
 ):
     """
     # Generate Transcribe
@@ -39,6 +40,9 @@ def download_file(
     * NA.
 
     """
+
+    if not callback_url:
+        raise HTTPException(status_code=HTTP_400, detail="Callback URL is required")
 
     # Checking file key is present in path params
     if not file_key:
@@ -58,7 +62,7 @@ def download_file(
         )
 
     # Enqueue the task to Celery
-    task = process_transcription.delay(file_key, identifier)
+    task = process_transcription.delay(file_key, identifier,callback_url)
 
     # Succes response
     return HTTP_200(

@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 import os
 import boto3
+from pathlib import Path
 # Load environment variables from .env file
-load_dotenv()
+env_path = Path('..') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Intialize openai key
 OPENAI_KEY=os.getenv("OPENAI_KEY")
@@ -32,4 +34,9 @@ transcribe_client = boto3.client(
 )
 
 
+
+# Intialize message broker
+
+CELERY_BROKER_URL=os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND=os.getenv('CELERY_RESULT_BACKEND')
 

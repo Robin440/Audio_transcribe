@@ -113,11 +113,11 @@ def transcribe_audio_with_aws(filename: str):
                     "end_time": end_time,
                 }
             )
-
-        print( {
+        data =  {
             "transcription_text": transcription_text,
             "conversations": conversations,
-        })
+        }
+        return data
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

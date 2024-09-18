@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - celery_worker
+    volumes:
+      - ./app:/app  # Maps the 'app' directory inside the container
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6380:6379"
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A app.worker_celery worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./app:/app  # Maps the 'app' directory inside the container
